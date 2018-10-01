@@ -2,4 +2,6 @@ require_relative '../config/environment'
 
 
 
-puts "HELLO WORLD"
+puts `clear`
+introduction
+set_player
