@@ -1,4 +1,5 @@
 class Performance < ActiveRecord::Base
-  # belongs_to :players
-  # has_many :genres
+  # has_many :bands, :judges
+  # has_one :audience
+
 end
