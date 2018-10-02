@@ -14,16 +14,15 @@ def set_player
   puts "What genre will your band play?"
   band_genre = gets.chomp
 
-  Player.create({name: player_name, band_name: band_name, genre: band_genre})
+  player = Player.create({name: player_name, band_name: band_name, genre: band_genre})
   puts "clear"
-  band_attributes
+  band_attributes(player)
 end
 
-def band_attributes
-  # puts "Welcome, #{Player.name}! Ready to put #{band_name} together?"
-  puts "You now have 10 points to allocate however you want!\n"
 
-  puts "Choose any of the following to begin customizing your performance:"
+def band_attributes(player)
+  puts "Welcome, #{player.name}! Ready to put #{player.band_name} together?"
+  puts "You now have 10 points to allocate however you want!\n"
 
   points = 10
 
@@ -69,5 +68,36 @@ def band_attributes
   puts "Technical Ability: #{technical_ability}"
   puts "Lyrics: #{lyrics}"
 
-  Band.create(presentation: presentation, stage_presence: stage_presence, tech_ability: technical_ability, lyrics: lyrics)
+  band = Band.create({presentation: presentation, stage_presence: stage_presence,
+        tech_ability: technical_ability, lyrics: lyrics,
+        band_name: player.band_name, genre_type: player.genre})
+  band
+end
+
+  def judgecreation
+    # Create judges here
+  end
+
+def battle
+  # Pit Player's band against CPU band
+  # - Grade player's performance
+  #   o Evaluate Judge 1 score
+  #   o Evaluate Judge 2 score
+  #   o Evaluate Judge 3 score
+  #   o Evaluate Audience score
+  # - Grade CPU performance
+  #   o Evaluate Judge 1 score
+  #   o Evaluate Judge 2 score
+  #   o Evaluate Judge 3 score
+  #   o Evaluate Audience score
+end
+
+def awardceremony
+  # Present Player 1 scores
+  # Judges each provide a personalized score w/ text and video
+  # Audience score is presented as applause level
+  # Present Player 2 scores
+  # Judges each provide a personalized score w/ text and video
+  # Audience score is presented as applause level
+  # Announce winner
 end
