@@ -4,6 +4,8 @@ def introduction
   puts "Welcome to Battle of the Bands!"
 end
 
+
+
 def set_player
   puts "What is your name?"
   player_name = gets.chomp
@@ -14,14 +16,18 @@ def set_player
   puts "What genre will your band play?"
   band_genre = gets.chomp
 
-  player = Player.create({name: player_name, band_name: band_name, genre: band_genre})
-  puts "clear"
-  band_attributes(player)
+  player = Player.create(name: player_name)
+  band = Band.create(name: band_name, genre: band_genre)
+  player.update(band_id: band.id)
+  band.update(player_id: player.id)
+  puts `clear`
+  return player, band
 end
 
 
-def band_attributes(player)
-  puts "Welcome, #{player.name}! Ready to put #{player.band_name} together?"
+
+def band_stats(player, band)
+  puts "Welcome, #{player.name}! Ready to put #{band.name} together?"
   puts "You now have 10 points to allocate however you want!\n"
 
   points = 10
@@ -68,36 +74,63 @@ def band_attributes(player)
   puts "Technical Ability: #{technical_ability}"
   puts "Lyrics: #{lyrics}"
 
-  band = Band.create({presentation: presentation, stage_presence: stage_presence,
-        tech_ability: technical_ability, lyrics: lyrics,
-        band_name: player.band_name, genre_type: player.genre})
-  band
+  band.update(presentation: presentation)
+  band.update(stage_presence: stage_presence)
+  band.update(tech_ability: technical_ability)
+  band.update(lyrics: lyrics)
+
+  return player, band
 end
 
-  def judgecreation
-    # Create judges here
+
+
+def judgecreation
+  simon = Judge.create(
+    name: "Simon",
+    preferred_att1: "technical_ability",
+    preferred_att2: "stage_presence")
+  randy = Judge.create(
+    name: "Randy",
+    preferred_att1: "presentation",
+    preferred_att2: "lyrics")
+  paula = Judge.create(
+    name: "Paula",
+    preferred_att1: "stage_presence",
+    preferred_att2: [
+        "technical_ability",
+        "lyrics",
+        "presentation"
+      ].sample)
+end
+
+
+def showdown(player1, player2)
+  showdown = Performance.create
+  showdown.battle([player1.band, player2.band])
+  showdown.audience
+  max = 0
+  winner = nil
+  bands = [player1.band, player2.band]
+  bands.each do |band|
+    total = band.grade# + band.applause_level
+    if total > max
+      max = total
+      winner = band
+    end
   end
-
-def battle
-  # Pit Player's band against CPU band
-  # - Grade player's performance
-  #   o Evaluate Judge 1 score
-  #   o Evaluate Judge 2 score
-  #   o Evaluate Judge 3 score
-  #   o Evaluate Audience score
-  # - Grade CPU performance
-  #   o Evaluate Judge 1 score
-  #   o Evaluate Judge 2 score
-  #   o Evaluate Judge 3 score
-  #   o Evaluate Audience score
+  puts winner
 end
 
-def awardceremony
-  # Present Player 1 scores
-  # Judges each provide a personalized score w/ text and video
-  # Audience score is presented as applause level
-  # Present Player 2 scores
-  # Judges each provide a personalized score w/ text and video
-  # Audience score is presented as applause level
-  # Announce winner
+
+
+
+
+def awards_ceremony(winner)
+  Band.all.each do |band|
+    Judge.each do |judge|
+      judge.response(band.grade)
+    end
+    Performance.audience_response(band.applause_level)
+  end
+  #Announce winner
 end
